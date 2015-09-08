@@ -101,23 +101,46 @@ environments {
 
 // log4j configuration
 log4j = {
-    // Example of changing the log pattern for the default console appender:
-    //
-    //appenders {
-    //    console name:'stdout', layout:pattern(conversionPattern: '%c{2} %m%n')
-    //}
+    def catalinaBase = 'log4j'
+    def consoleLogging = org.apache.log4j.Level.ERROR
+    def devPortalLogging = org.apache.log4j.Level.INFO
 
-    error  'org.codehaus.groovy.grails.web.servlet',        // controllers
-           'org.codehaus.groovy.grails.web.pages',          // GSP
-           'org.codehaus.groovy.grails.web.sitemesh',       // layouts
-           'org.codehaus.groovy.grails.web.mapping.filter', // URL mapping
-           'org.codehaus.groovy.grails.web.mapping',        // URL mapping
-           'org.codehaus.groovy.grails.commons',            // core / classloading
-           'org.codehaus.groovy.grails.plugins',            // plugins
-           'org.codehaus.groovy.grails.orm.hibernate',      // hibernate integration
-           'org.springframework',
-           'org.hibernate',
-           'net.sf.ehcache.hibernate'
+    environments {
+        development {
+            consoleLogging = org.apache.log4j.Level.TRACE
+            devPortalLogging = org.apache.log4j.Level.TRACE
+        }
+        production {
+            consoleLogging = org.apache.log4j.Level.ERROR
+            devPortalLogging = org.apache.log4j.Level.INFO
+        }
+    }
+
+    appenders {
+        console name: 'stdout', layout: pattern(conversionPattern: '%d %-5p [%c] %m%n')
+        rollingFile name: 'stacktrace', file: "${catalinaBase}/logs/stacktrace.log", maxFileSize: "50MB", layout: pattern(conversionPattern: '%d %-5p [%c] %m%n')
+        appender new org.apache.log4j.DailyRollingFileAppender(
+                name: 'testAppender',
+                datePattern: "'.'yyyy-MM-dd",
+                fileName: "${catalinaBase}/logs/test.log",
+                layout: pattern(conversionPattern: '%d [%t] %-5p %c{2} %x - %m%n')
+        )
+    }
+
+    environments {
+        development {
+            root {
+                info 'stdout', 'testAppender'
+            }
+            trace 'grails.app.controller', 'grails.app.service', 'grails.app.filters'
+            debug 'grails.app.task'
+        }
+        production {
+            root {
+                info 'stdout', 'testAppender'
+            }
+        }
+    }
 }
 
 
