@@ -13,6 +13,8 @@ class User implements Serializable {
 	boolean accountLocked
 	boolean passwordExpired
 
+	static hasMany = [openIds: OpenID]
+
 	User(String username, String password) {
 		this()
 		this.username = username
@@ -47,7 +49,7 @@ class User implements Serializable {
 			encodePassword()
 		}
 	}
-
+	//TODO: Add random salt to the password
 	protected void encodePassword() {
 		password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
 	}

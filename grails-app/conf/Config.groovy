@@ -133,6 +133,12 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/**/js/**':        ['permitAll'],
 	'/**/css/**':       ['permitAll'],
 	'/**/images/**':    ['permitAll'],
-	'/**/favicon.ico':  ['permitAll']
+	'/**/favicon.ico':  ['permitAll'],
+    '/dbconsole/**':    ['permitAll']
 ]
 
+grails.plugin.springsecurity.rememberMe.persistent = true
+grails.plugin.springsecurity.rememberMe.persistentToken.domainClassName = 'com.test.auth.PersistentLogin'
+
+
+grails.plugin.springsecurity.openid.domainClass = 'com.test.auth.OpenID'
