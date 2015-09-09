@@ -6,7 +6,7 @@ class OpenID {
 
 	String url
 
-	static belongsTo = [user: User]
+	static belongsTo = [user: TestUser]
 
 	static constraints = {
 		url unique: true

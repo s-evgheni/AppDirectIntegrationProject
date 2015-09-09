@@ -118,7 +118,7 @@ log4j = {
 
     appenders {
         console name: 'stdout', layout: pattern(conversionPattern: '%d %-5p [%c] %m%n')
-        rollingFile name: 'stacktrace', file: "${catalinaBase}/logs/stacktrace.log", maxFileSize: "50MB", layout: pattern(conversionPattern: '%d %-5p [%c] %m%n')
+        rollingFile name: 'stacktrace', file: "${catalinaBase}/logs/stacktrace.log", maxFileSize: "10MB", layout: pattern(conversionPattern: '%d %-5p [%c] %m%n')
         appender new org.apache.log4j.DailyRollingFileAppender(
                 name: 'testAppender',
                 datePattern: "'.'yyyy-MM-dd",
@@ -145,9 +145,9 @@ log4j = {
 
 
 // Added by the Spring Security Core plugin:
-grails.plugin.springsecurity.userLookup.userDomainClassName = 'com.test.auth.User'
+grails.plugin.springsecurity.userLookup.userDomainClassName = 'com.test.auth.TestUser'
 grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'com.test.auth.UserRole'
-grails.plugin.springsecurity.authority.className = 'com.test.auth.Role'
+grails.plugin.springsecurity.authority.className = 'com.test.auth.TestRole'
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/':                ['permitAll'],
 	'/index':           ['permitAll'],
@@ -157,7 +157,8 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/**/css/**':       ['permitAll'],
 	'/**/images/**':    ['permitAll'],
 	'/**/favicon.ico':  ['permitAll'],
-    '/dbconsole/**':    ['permitAll']
+    '/dbconsole/**':    ['permitAll'],
+    '/logout/**':       ['permitAll']
 ]
 
 grails.plugin.springsecurity.rememberMe.persistent = true

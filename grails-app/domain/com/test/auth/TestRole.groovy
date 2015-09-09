@@ -1,12 +1,12 @@
 package com.test.auth
 
-class Role implements Serializable {
+class TestRole implements Serializable {
 
 	private static final long serialVersionUID = 1
 
 	String authority
 
-	Role(String authority) {
+	TestRole(String authority) {
 		this()
 		this.authority = authority
 	}
@@ -18,7 +18,7 @@ class Role implements Serializable {
 
 	@Override
 	boolean equals(other) {
-		is(other) || (other instanceof Role && other.authority == authority)
+		is(other) || (other instanceof TestRole && other.authority == authority)
 	}
 
 	@Override

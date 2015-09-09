@@ -1,6 +1,6 @@
 package com.test.auth
 
-class User implements Serializable {
+class TestUser implements Serializable {
 
 	private static final long serialVersionUID = 1
 
@@ -15,7 +15,7 @@ class User implements Serializable {
 
 	static hasMany = [openIds: OpenID]
 
-	User(String username, String password) {
+    TestUser(String username, String password) {
 		this()
 		this.username = username
 		this.password = password
@@ -28,7 +28,7 @@ class User implements Serializable {
 
 	@Override
 	boolean equals(other) {
-		is(other) || (other instanceof User && other.username == username)
+		is(other) || (other instanceof TestUser && other.username == username)
 	}
 
 	@Override
@@ -36,7 +36,7 @@ class User implements Serializable {
 		username
 	}
 
-	Set<Role> getAuthorities() {
+	Set<TestRole> getAuthorities() {
 		UserRole.findAllByUser(this)*.role
 	}
 

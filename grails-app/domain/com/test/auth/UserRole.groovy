@@ -10,10 +10,10 @@ class UserRole implements Serializable {
 
 	private static final long serialVersionUID = 1
 
-	User user
-	Role role
+	TestUser user
+	TestRole role
 
-	UserRole(User u, Role r) {
+	UserRole(TestUser u, TestRole r) {
 		this()
 		user = u
 		role = r
@@ -46,18 +46,18 @@ class UserRole implements Serializable {
 
 	private static DetachedCriteria criteriaFor(long userId, long roleId) {
 		UserRole.where {
-			user == User.load(userId) &&
-			role == Role.load(roleId)
+			user == TestUser.load(userId) &&
+			role == TestRole.load(roleId)
 		}
 	}
 
-	static UserRole create(User user, Role role, boolean flush = false) {
+	static UserRole create(TestUser user, TestRole role, boolean flush = false) {
 		def instance = new UserRole(user, role)
 		instance.save(flush: flush, insert: true)
 		instance
 	}
 
-	static boolean remove(User u, Role r, boolean flush = false) {
+	static boolean remove(TestUser u, TestRole r, boolean flush = false) {
 		if (u == null || r == null) return false
 
 		int rowCount = UserRole.where { user == u && role == r }.deleteAll()
@@ -67,7 +67,7 @@ class UserRole implements Serializable {
 		rowCount
 	}
 
-	static void removeAll(User u, boolean flush = false) {
+	static void removeAll(TestUser u, boolean flush = false) {
 		if (u == null) return
 
 		UserRole.where { user == u }.deleteAll()
@@ -75,7 +75,7 @@ class UserRole implements Serializable {
 		if (flush) { UserRole.withSession { it.flush() } }
 	}
 
-	static void removeAll(Role r, boolean flush = false) {
+	static void removeAll(TestRole r, boolean flush = false) {
 		if (r == null) return
 
 		UserRole.where { role == r }.deleteAll()
@@ -84,7 +84,7 @@ class UserRole implements Serializable {
 	}
 
 	static constraints = {
-		role validator: { Role r, UserRole ur ->
+		role validator: { TestRole r, UserRole ur ->
 			if (ur.user == null || ur.user.id == null) return
 			boolean existing = false
 			UserRole.withNewSession {
