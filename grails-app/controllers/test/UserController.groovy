@@ -7,6 +7,7 @@ import grails.plugin.springsecurity.annotation.Secured
 //secret: JabfzqE8Zt5U
 @Secured(['permitAll'])
 class UserController {
+    static allowedMethods = [assign: ['POST'], unassign: ['POST']]
 
     //USER_ASSIGNMENT: fired by AppDirect when a user assigns a user to an app.
     def assign() {

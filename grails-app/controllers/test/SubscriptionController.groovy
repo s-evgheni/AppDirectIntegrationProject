@@ -6,6 +6,7 @@ import grails.plugin.springsecurity.annotation.Secured
 //Endpoints will be secured via Oauth
 @Secured(['permitAll'])
 class SubscriptionController {
+    static allowedMethods = [create: ['POST'], change: ['POST'],cancel: ['POST'],status: ['GET']]
 
     //SUBSCRIPTION_ORDER: fired by AppDirect when a user buys an app from AppDirect.
     def create(){
