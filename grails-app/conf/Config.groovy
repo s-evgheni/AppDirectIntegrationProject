@@ -1,15 +1,8 @@
-// locations to search for config files that get merged into the main config;
-// config files can be ConfigSlurper scripts, Java properties files, or classes
-// in the classpath in ConfigSlurper format
+//Configuration file setup
+def configLocations = ["classpath:${appName}-config.properties"]
+def currentEnvironment = System.getProperty('grails.env')
 
-// grails.config.locations = [ "classpath:${appName}-config.properties",
-//                             "classpath:${appName}-config.groovy",
-//                             "file:${userHome}/.grails/${appName}-config.properties",
-//                             "file:${userHome}/.grails/${appName}-config.groovy"]
-
-// if (System.properties["${appName}.config.location"]) {
-//    grails.config.locations << "file:" + System.properties["${appName}.config.location"]
-// }
+grails.config.locations = configLocations
 
 grails.project.groupId = appName // change this to alter the default package name and Maven publishing destination
 
@@ -158,7 +151,8 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/**/images/**':    ['permitAll'],
 	'/**/favicon.ico':  ['permitAll'],
     '/dbconsole/**':    ['permitAll'],
-    '/logout/**':       ['permitAll']
+    '/logout/**':       ['permitAll'],
+    '/subscription/**': ['permitAll']
 ]
 
 grails.plugin.springsecurity.rememberMe.persistent = true

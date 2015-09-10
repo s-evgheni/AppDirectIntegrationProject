@@ -11,9 +11,15 @@ class UrlMappings {
             controller = 'openId'
             action = 'auth'
         }
+
         "/login/openIdCreateAccount" {
             controller = 'openId'
             action = 'createAccount'
+        }
+
+        "/subscription/create" {
+            controller = 'subscription'
+            action = 'create'
         }
 
         "/"(view:"/index")
