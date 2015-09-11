@@ -1,9 +1,9 @@
 # Read Me
 Requirements: Grails v. 2.3.10, Java 7
 
-to run locally change directory to the root of this app and execute $grails run-app from the command line
+To run locally change directory to the root of this app and execute $grails run-app from the command line.
 
-to create war file run $grails war from the command line
+To create 'war' file run $grails war from the command line
 
 ##User registration and linking via OpenID option:
 1. Navigate to http://localhost:8080/test/ and you should be prompted with the login screen.
@@ -17,6 +17,6 @@ Click on a logout button and navigate to http://localhost:8080/test/secured/admi
 
 
 ##To test remember-me:
-1. close the browser and re-open it
-2. navigate to http://localhost:8080/test/
+1. Close the browser and re-open it
+2. Navigate to http://localhost:8080/test/
 If working correctly and you were logged in as admin it should skip the authentication step entirely and show the secured page.
