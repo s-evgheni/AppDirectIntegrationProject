@@ -1,5 +1,7 @@
 # Read Me
-to run locally execute $grails run-app from the command line
+Requirements: Grails v. 2.3.10, Java 7
+
+to run locally change directory to the root of this app and execute $grails run-app from the command line
 
 to create war file run $grails war from the command line
 
