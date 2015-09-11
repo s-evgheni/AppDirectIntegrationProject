@@ -180,7 +180,7 @@ class PublicController implements InitializingBean {
             def config = SpringSecurityUtils.securityConfig
 
             password = encodePassword(password)
-            def user = User.newInstance((usernamePropertyName): username,
+            def user = User.newInstance((usernamePropName): username,
                     (passwordPropertyName): password,
                     (enabledPropertyName): true)
 
@@ -190,8 +190,9 @@ class PublicController implements InitializingBean {
                 return false
             }
 
+            def role  = grailsApplication.getClassForName(config.authority.className)
             for (roleName in config.openid.registration.roleNames) {
-                UserRole.create user, Role.findWhere((roleNameField): roleName)
+                UserRole.create user, role.findWhere((roleNameField): roleName)
             }
             return true
         }
@@ -223,6 +224,7 @@ class PublicController implements InitializingBean {
         User.withTransaction { status ->
             def user = User.findWhere((usernamePropName): username)
             user.addToOpenIds(url: openId)
+            Role = grailsApplication.getClassForName(conf.authority.className)
             if (!user.validate()) {
                 status.setRollbackOnly()
             }
@@ -264,13 +266,11 @@ class OpenIdRegisterCommand {
     static constraints = {
         username blank: false, validator: { String username, command ->
 
-            def User = grailsApplication.getClassForName(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName)
+            def User = grails.util.Holders.getGrailsApplication().getClassForName(SpringSecurityUtils.securityConfig.userLookup.userDomainClassName)
 
             User.withNewSession { session ->
                 if (username) {
-                    boolean exists = User.createCriteria().count {
-                        eq usernamePropName, username
-                    }
+                    boolean exists = User.createCriteria().get{eq('username',username)}
                     if (exists) {
                         return 'openIdRegisterCommand.username.error.unique'
                     }
@@ -283,10 +283,10 @@ class OpenIdRegisterCommand {
             }
 
             if (password && password.length() >= 8 && password.length() <= 64 &&
-                    (!password.matches('^.*\\\\p{Alpha}.*$') ||
-                            !password.matches('^.*\\\\p{Digit}.*$') ||
-                            !password.matches('^.*[!@#$%^&].*$'))) {
-                return 'openIdRegisterCommand.password.error.strength'
+               (!password.matches('^.*[a-zA-Z].*$') ||
+                !password.matches('^.*[0-9].*$') ||
+                !password.matches('^.*[!@#$%^&].*$'))) {
+              return 'openIdRegisterCommand.password.error.strength'
             }
         }
         password2 validator: { password2, command ->
