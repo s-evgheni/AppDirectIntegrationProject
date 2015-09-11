@@ -32,19 +32,6 @@ class SecurityFilters {
                 //OAUTH implementation BEGIN
                 //Authorization header sample:
                //OAuth oauth_consumer_key="appdirectintegration-39910", oauth_nonce="-8398153019108983984", oauth_signature="xNUht1XANoFHzQapA2A4KsKcsE8%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1441827672", oauth_version="1.0"
-/*                def authType, authTokens = ""
-
-                try{
-                    (authType, authTokens) = new String(authString).split(' ')
-                }catch(Exception e){
-                    log.error("API|Security Filter|basicAuth - Error: authorization token parsing error: " + e)
-                    return false
-                }
-                //check token type
-                if(authType!='OAuth'){
-                    log.error("API|Security Filter|basicAuth - Error: Invalid token type, must be set to 'OAuth'. Provided value: " + authType?.toUpperCase())
-                    return false
-                }*/
             }
         }
     }

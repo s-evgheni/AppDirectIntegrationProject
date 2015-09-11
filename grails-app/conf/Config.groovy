@@ -144,7 +144,6 @@ grails.plugin.springsecurity.authority.className = 'com.test.auth.TestRole'
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/':                ['permitAll'],
 	'/index':           ['permitAll'],
-	'/index.gsp':       ['permitAll'],
 	'/assets/**':       ['permitAll'],
 	'/**/js/**':        ['permitAll'],
 	'/**/css/**':       ['permitAll'],
@@ -152,7 +151,8 @@ grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/**/favicon.ico':  ['permitAll'],
     '/dbconsole/**':    ['permitAll'],
     '/logout/**':       ['permitAll'],
-    '/subscription/**': ['permitAll']
+    '/subscription/**': ['permitAll'],
+    '/public/**':       ['permitAll']
 ]
 
 grails.plugin.springsecurity.rememberMe.persistent = true
