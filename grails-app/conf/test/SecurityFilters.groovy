@@ -31,7 +31,13 @@ class SecurityFilters {
 
                 //OAUTH implementation BEGIN
                 //Authorization header sample:
-               //OAuth oauth_consumer_key="appdirectintegration-39910", oauth_nonce="-8398153019108983984", oauth_signature="xNUht1XANoFHzQapA2A4KsKcsE8%3D", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1441827672", oauth_version="1.0"
+               //OAuth
+               //oauth_consumer_key="appdirectintegration-39910",
+               //oauth_nonce="-8398153019108983984",
+               //oauth_signature="xNUht1XANoFHzQapA2A4KsKcsE8%3D",
+               //oauth_signature_method="HMAC-SHA1",
+               //oauth_timestamp="1441827672",
+               //oauth_version="1.0"
             }
         }
     }
