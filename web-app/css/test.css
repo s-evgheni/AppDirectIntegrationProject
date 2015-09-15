@@ -6187,7 +6187,7 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 }
 
 input, textarea, select {
-    -webkit-appearance: none;
+    /*-webkit-appearance: none;*/
     border-radius: 0;
 }
 

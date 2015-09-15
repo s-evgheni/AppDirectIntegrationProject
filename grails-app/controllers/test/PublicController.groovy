@@ -15,6 +15,7 @@ import org.springframework.security.core.AuthenticationException
  */
 @Secured(['permitAll'])
 class PublicController implements InitializingBean {
+    static layout = "main"
     /** Dependency injection for daoAuthenticationProvider. */
     def daoAuthenticationProvider
 
