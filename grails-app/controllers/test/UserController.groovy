@@ -2,12 +2,10 @@ package test
 
 import grails.plugin.springsecurity.annotation.Secured
 
-//Endpoints will be secured via Oauth
-//key: appdirectintegration-39910
-//secret: JabfzqE8Zt5U
+//Endpoints will be secured via security filters
 @Secured(['permitAll'])
 class UserController {
-    static allowedMethods = [assign: ['POST'], unassign: ['POST']]
+    static allowedMethods = [assign: ['GET'], unassign: ['GET']]
 
     //USER_ASSIGNMENT: fired by AppDirect when a user assigns a user to an app.
     def assign() {

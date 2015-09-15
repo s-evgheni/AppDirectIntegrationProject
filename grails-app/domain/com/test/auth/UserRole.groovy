@@ -14,7 +14,6 @@ class UserRole implements Serializable {
 	TestRole role
 
 	UserRole(TestUser u, TestRole r) {
-		this()
 		user = u
 		role = r
 	}

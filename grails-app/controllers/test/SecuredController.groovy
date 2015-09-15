@@ -7,6 +7,9 @@ class SecuredController {
 
     static layout = "main"
 
+    def userService
+    def springSecurityService
+
     @Secured(['ROLE_ADMIN'])
     def admins() {
         render view: 'adminMain'
@@ -14,7 +17,13 @@ class SecuredController {
 
     @Secured(['ROLE_USER'])
     def users() {
-        render view: 'userMain'
+        def userData=[:]
+        try{
+            userData = userService.getData(springSecurityService.currentUser.username)
+        }catch (Exception e){
+            render view: 'userMain', model: userData
+        }
+        render view: 'userMain', model: [userName:userData.userName]
     }
 
     @Secured(['permitAll'])

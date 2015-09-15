@@ -143,16 +143,12 @@ grails.plugin.springsecurity.userLookup.authorityJoinClassName = 'com.test.auth.
 grails.plugin.springsecurity.authority.className = 'com.test.auth.TestRole'
 grails.plugin.springsecurity.controllerAnnotations.staticRules = [
 	'/':                ['permitAll'],
-	'/index':           ['permitAll'],
 	'/assets/**':       ['permitAll'],
 	'/**/js/**':        ['permitAll'],
 	'/**/css/**':       ['permitAll'],
 	'/**/images/**':    ['permitAll'],
 	'/**/favicon.ico':  ['permitAll'],
-    '/dbconsole/**':    ['permitAll'],
-    '/logout/**':       ['permitAll'],
-    '/subscription/**': ['permitAll'],
-    '/public/**':       ['permitAll']
+    '/dbconsole/**':    ['permitAll']
 ]
 
 grails.plugin.springsecurity.rememberMe.persistent = true

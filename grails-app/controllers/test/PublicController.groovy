@@ -181,8 +181,8 @@ class PublicController implements InitializingBean {
 
             password = encodePassword(password)
             def user = User.newInstance((usernamePropName): username,
-                    (passwordPropertyName): password,
-                    (enabledPropertyName): true)
+                                        (passwordPropertyName): password,
+                                        (enabledPropertyName): true)
 
             user.addToOpenIds(url: openId)
 
@@ -221,10 +221,10 @@ class PublicController implements InitializingBean {
         // just checks that user exists, password is valid, account not locked, etc.
         daoAuthenticationProvider.authenticate new UsernamePasswordAuthenticationToken(username, password)
 
+        def config = SpringSecurityUtils.securityConfig
         User.withTransaction { status ->
             def user = User.findWhere((usernamePropName): username)
             user.addToOpenIds(url: openId)
-            Role = grailsApplication.getClassForName(conf.authority.className)
             if (!user.validate()) {
                 status.setRollbackOnly()
             }

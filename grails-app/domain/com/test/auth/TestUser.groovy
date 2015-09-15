@@ -13,10 +13,9 @@ class TestUser implements Serializable {
 	boolean accountLocked
 	boolean passwordExpired
 
-	static hasMany = [openIds: OpenID]
+	static hasMany = [openIds: OpenID, subscriptions: Subscription]
 
     TestUser(String username, String password) {
-		this()
 		this.username = username
 		this.password = password
 	}
@@ -49,7 +48,7 @@ class TestUser implements Serializable {
 			encodePassword()
 		}
 	}
-	//TODO: Add random salt to the password
+
 	protected void encodePassword() {
 		password = springSecurityService?.passwordEncoder ? springSecurityService.encodePassword(password) : password
 	}

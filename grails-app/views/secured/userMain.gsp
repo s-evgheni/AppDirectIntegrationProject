@@ -2,9 +2,9 @@
     <div class="panel">
         <header class="panel-header"><h3>Welcome to the USER section of our site!</h3></header>
         <div class="row">
-            <div class="large-12 columns">
-                <p class="text-left">User name: <strong><sec:loggedInUserInfo field="username"/></strong></p>
-            </div>
+                <div class="large-12 columns">
+                    <p class="text-left">User name: <strong>${userName}</strong></p>
+                </div>
         </div>
 
         <div class="row">

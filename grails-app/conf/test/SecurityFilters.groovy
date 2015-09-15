@@ -1,9 +1,11 @@
 package test
 
+import com.constants.ErrorCode
+import com.util.ResponseUtil
+
 class SecurityFilters {
 
     def dependsOn = [RequestLogFilters]
-    static def VALID_KEY= 'appdirectintegration-39910'
 
     def filters = {
         basicAuth(controller:'addon|subscription|user', action:'*') {
@@ -13,24 +15,24 @@ class SecurityFilters {
 
                 if(!authString){
                     log.error("API|Security Filter|basicAuth - Error: Data missing in the authorization header.")
+                    render text:  getSecurityErrorResponse(ErrorCode.UNAUTHORIZED)
                     return false
                 }
                 def result=formatAuthStringIntoMap(authString)
                 if(!result){
                     log.error("API|Security Filter|basicAuth - Error: Data missing in the authorization header.")
+                    render text: getSecurityErrorResponse(ErrorCode.UNKNOWN_ERROR)
                     return false
                 }
 
                 boolean valid=validate(result)
                 if(!valid){
                     log.error("API|Security Filter|basicAuth - Error: Data missing in the authorization header.")
+                    render text: getSecurityErrorResponse(ErrorCode.UNAUTHORIZED)
                     return false
                 }
-                //if all valid save data in session
-                session.authHeaderData=result
 
-                //OAUTH implementation BEGIN
-                //Authorization header sample:
+               //Authorization header sample:
                //OAuth
                //oauth_consumer_key="appdirectintegration-39910",
                //oauth_nonce="-8398153019108983984",
@@ -67,7 +69,8 @@ class SecurityFilters {
         return mapWithTokens
     }
 
-    //checks Authorization header data tokens
+    //basic validation of the tokens in Authorization header
+    //In a real app this must be extended to perform more sophisticated checks
     private boolean validate(result){
         if(!result||result.size==0) return false
         if(!result.find{it.key=='oauthconsumerkey'}.value||
@@ -76,5 +79,9 @@ class SecurityFilters {
                 return false
         //TODO: Add other Authorization header validation rules
         return true
+    }
+
+    def getSecurityErrorResponse(ErrorCode code) {
+        ResponseUtil.generateErrorResponse(code)
     }
 }

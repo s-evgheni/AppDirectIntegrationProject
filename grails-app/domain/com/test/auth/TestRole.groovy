@@ -7,7 +7,6 @@ class TestRole implements Serializable {
 	String authority
 
 	TestRole(String authority) {
-		this()
 		this.authority = authority
 	}
 
