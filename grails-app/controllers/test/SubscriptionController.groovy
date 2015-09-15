@@ -1,5 +1,6 @@
 package test
 
+import com.constants.ErrorCode
 import com.util.ResponseUtil
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -17,11 +18,13 @@ class SubscriptionController {
     def create(){
         def eventUrl=params?.eventUrl?:""
         def result = eventService.processEvent(eventUrl)
-        if(result?.error)
+        if(result?.error)//in case of error
             render text: ResponseUtil.generateErrorResponse(result.error)
-        else {//success case
-            render text: ResponseUtil.generateErrorResponse(result.error)
-        }
+        else if(result?.accountHolder)//in case of success
+            render text: ResponseUtil.generateErrorResponse(ErrorCode.UNKNOWN_ERROR)
+            /*render text: ResponseUtil.generateSuccessResponse(result.accountHolder)*/
+        else //just in case, if all else fails :)
+            render text: ResponseUtil.generateErrorResponse(ErrorCode.UNKNOWN_ERROR)
     }
     //SUBSCRIPTION_CHANGE: fired by AppDirect when a user upgrades/downgrades/modifies an existing subscription.
     def change(){

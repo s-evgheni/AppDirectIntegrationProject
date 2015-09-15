@@ -23,7 +23,7 @@ public enum ErrorCode {
     /*This error code is returned when the vendor was unable to process the event fetched from AppDirect.*/
     INVALID_RESPONSE ('INVALID_RESPONSE','Unable to process event from AppDirect'),
     /*This error code may be used when none of the other error codes apply.*/
-    UNKNOWN_ERROR ('UNKNOWN_ERROR','Unknown Error'),
+    UNKNOWN_ERROR ('UNKNOWN_ERROR','Something went wrong. Please see server logs for details'),
     /*This error code is returned when the vendor was unable to process the event because the service is under provisioning.*/
     PENDING ('PENDING','Service is under provisioning')
 

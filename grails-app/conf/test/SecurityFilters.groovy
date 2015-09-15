@@ -8,9 +8,11 @@ class SecurityFilters {
     def dependsOn = [RequestLogFilters]
 
     def filters = {
+        //This filter provides basic validation of the tokens in Authorization header
+        //In case of the error return error XML response as described at http://info.appdirect.com/developers/docs/event_references/api_error_codes/
+        //and prevent calls to the API endpoints
         basicAuth(controller:'addon|subscription|user', action:'*') {
             before = {
-                session.authHeaderData=[:]//reset auth header data on each request
                 def authString = request.getHeader('Authorization')
 
                 if(!authString){

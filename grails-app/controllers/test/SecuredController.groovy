@@ -12,22 +12,26 @@ class SecuredController {
 
     @Secured(['ROLE_ADMIN'])
     def admins() {
-        render view: 'adminMain'
+        render view: 'userMain', model: [userData:getViewModelData(springSecurityService?.currentUser?.username)]
     }
 
     @Secured(['ROLE_USER'])
     def users() {
-        def userData=[:]
-        try{
-            userData = userService.getData(springSecurityService.currentUser.username)
-        }catch (Exception e){
-            render view: 'userMain', model: userData
-        }
-        render view: 'userMain', model: [userName:userData.userName]
+        render view: 'userMain', model: [userData:getViewModelData(springSecurityService?.currentUser?.username)]
     }
 
     @Secured(['permitAll'])
     def logout(){
         redirect uri: SpringSecurityUtils.securityConfig.logout.filterProcessesUrl // '/j_spring_security_logout'
+    }
+
+    private def getViewModelData(String userName){
+        def userData=[:]
+        if(userName){
+            try{
+                userData = userService.lookupUserData(userName)
+            } catch (Exception e){ return userData }
+        }
+        return userData
     }
 }
