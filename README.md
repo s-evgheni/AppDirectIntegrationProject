@@ -22,9 +22,20 @@ Click on a logout button and navigate to http://localhost:8080/test/secured/{adm
 If working correctly and you were logged in as admin it should skip the authentication step entirely and show the secured page.
 
 #API flows:
-
+####Important !
+In order to use API flows for your account you must change consumer key and secret data in the EventService and rebuild the app 
+class EventService {
+    private static String CONSUMER_KEY='yourKeyHere'
+    private static String CONSUMER_SECRET='yourSecretHere'
+...
+}
 ##Create subscription (non-interactive event):
-1. Generate CREATE_SUBSCRIPTION event from AppDirect developer account (Developer > Products > Edit button > Integration section > Edit Integration > Subscribe to your product)
+1. Generate SUBSCRIPTION_ORDER event from AppDirect developer account (Developer > Products > Edit button > Integration section > Edit Integration > Subscribe to your product)
 2. Navigate to http://localhost:8080/test/dbconsole and check new user account created by AppDirect event in the TEST_USER table. (this data will also be available in the Integration > Events section of the developer account)
 3. Navigate to http://localhost:8080/test/secured/users and enter username from step 2 with a password='P@ssw0rd'
-If working correctly you will be redirected to the secured/users section of the site where information about new user and his active subscriptions will be displayed.
+If working correctly you will be redirected to the secured/users section of the site where information about new user and his subscription will be displayed.
+
+##Change subscription (non-interactive event):
+1. Generate SUBSCRIPTION_CHANGE event from AppDirect developer account (Developer > Products > Edit button > Integration section > Edit Integration > Change(update) the subscription)
+2. Navigate to http://localhost:8080/test/secured/users and enter username/password which was assigned to you during SUBSCRIPTION_ORDER event 
+If working correctly you will be redirected to the secured/users section of the site where information about user and his updated subscription will be displayed. Please note the changes to the subscription data
