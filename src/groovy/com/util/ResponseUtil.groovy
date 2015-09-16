@@ -13,7 +13,7 @@ class ResponseUtil {
         return XmlUtil.serialize("<result><success>false</success><errorCode>"+code.originNameCode+"</errorCode><message>"+code.message+"</message></result>")
     }
 
-    public static def generateSuccessResponse(accountHolder){
-        return XmlUtil.serialize("<result><success>true</success><message>Account creation successful for "+accountHolder.fullName+"</message><accountIdentifier>"+accountHolder.identifier+"</accountIdentifier></result>")
+    public static def generateSuccessResponse(accountId, message){
+        return XmlUtil.serialize("<result><success>true</success><message>"+message+"</message><accountIdentifier>"+accountId+"</accountIdentifier></result>")
     }
 }

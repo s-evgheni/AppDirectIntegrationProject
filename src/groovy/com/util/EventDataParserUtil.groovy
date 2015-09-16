@@ -40,6 +40,11 @@ class EventDataParserUtil {
                 pricingDuration:eventXml?.payload?.order?.pricingDuration?.text()?:""]
     }
 
+    public static getAccount(eventXml){
+        return [accountIdentifier:eventXml?.payload?.account?.accountIdentifier?.text()?:"",
+                status:eventXml?.payload?.account?.status?.text()?:""]
+    }
+
     public static getPayload(eventXml){
         return [company:getCompany(eventXml),
                 order:getOrder(eventXml)]

@@ -1,6 +1,7 @@
 package com.test.service
 
 import com.constants.SubscriptionStatus
+import com.test.auth.Subscription
 import com.test.auth.TestRole
 import com.test.auth.TestUser
 import com.test.auth.UserRole
@@ -37,34 +38,39 @@ class EventService {
                 def createSubscriptionResult = processCreateSubscriptionEvent(event.data)
                 return createSubscriptionResult
                 break
+            case EventType.SUBSCRIPTION_CHANGE:
+                def changeSubscriptionResult = processChangeSubscriptionEvent(event.data)
+                return changeSubscriptionResult
+                break
             default:
                 return [error:ErrorCode.INVALID_RESPONSE]
         }
     }
 
-    //Attempts to create a new user with given subscription data
-    //in case of success returns [accountHolder.fullName, accountHolder.identifier]
+    //Behaviour:
+    //1. If user do not exist: Creates a new user with given subscription data
+    //2. If user exist: Replace user's current subscription with given subscription data(only if existing user's subscription is NOT active)
+    //in case of success returns [message, accountId]
     //in case of failure returns [error: com.constants.ErrorCode]
     def private processCreateSubscriptionEvent(eventData){
         //all new users will be assigned a username=creator.email, role=USER_ROLE,
         //and default password='P@ssw0rd'
-        String userName=EventDataParserUtil.getCreator(eventData).email
-        log.info("EventService|processCreateSubscriptionEvent > Processing CREATE_SUBSCRIPTION event for user:"+userName)
-        if(userName){
+        String accountIdentifier=EventDataParserUtil.getCreator(eventData).email
+        log.info("EventService|processCreateSubscriptionEvent > Processing CREATE_SUBSCRIPTION event for user:"+accountIdentifier)
+        if(accountIdentifier){
             try{
                 String password=DEFAULT_USER_PASSWORD
                 String openId=EventDataParserUtil.getCreator(eventData).openId?:""
                 String marketplace= EventDataParserUtil.getMarketPlace(eventData).partner?:"Unknown"
+                def order = EventDataParserUtil.getOrder(eventData)
                 log.info("EventService|processCreateSubscriptionEvent > User's openID:"+openId)
-                //check if user exist
-                boolean exist = TestUser.createCriteria().get{eq('username',userName)}
 
-                if(!exist){
+                def existingUser = TestUser.findByUsername(accountIdentifier)//check if user exist in the database
+                if(!existingUser){//if not exist we need to create a new one and add a subscription to his/her account
                     def transactionResult=TestUser.withTransaction {
-                        def newUser = TestUser.newInstance(username:userName,password:password,enabled:true)
+                        def newUser = TestUser.newInstance(username:accountIdentifier,password:password,enabled:true)
 
                         //add subscription data to user
-                        def order = EventDataParserUtil.getOrder(eventData)
                         log.info("EventService|processCreateSubscriptionEvent > User's order data:"+order.toString())
                         if(order?.editionCode&&order?.pricingDuration)
                             newUser.addToSubscriptions(name:order?.editionCode,
@@ -87,20 +93,87 @@ class EventService {
                         //add role to user to enable authentication flow
                         def defaultRole = TestRole.findWhere('authority': 'ROLE_USER')
                         UserRole.create newUser, defaultRole
-                        //if all good return accountHolder data for successful response
+                        //if all good return message and accountID data to build successful response
                         String accountHolderFullName= EventDataParserUtil.getCreator(eventData).firstName+" "+EventDataParserUtil.getCreator(eventData).lastName
-                        return [accountHolder:[fullName:accountHolderFullName, identifier:userName]]
+                        return [message:"New subscription has been created for:"+accountHolderFullName, accountId:accountIdentifier]
                     }
+                    log.info("EventService|processChangeSubscriptionEvent > CREATE_SUBSCRIPTION event for user:"+accountIdentifier+"has been successfully processed!")
                     return transactionResult
                 }
-                log.error("EventService|processCreateSubscriptionEvent > "+userName+" already exist in a system!")
-                return [error: ErrorCode.USER_ALREADY_EXISTS]
+                else{//for existing users check that a user have no active subscription
+                    Subscription currentSubscription = existingUser.subscriptions[0]//a user can have only one active subscription at any given time
+                    if(currentSubscription.status.equals(SubscriptionStatus.ACTIVE)){
+                        log.error("EventService|processCreateSubscriptionEvent > Account with id: "+accountIdentifier+" can only have one active subscription at any given time")
+                        return [error: ErrorCode.OPERATION_CANCELED]
+                    }
+                    log.info("EventService|processChangeSubscriptionEvent > Current subscription data: "+currentSubscription.toString()+" New subscription data:"+order.toString())
+                    if(order?.editionCode&&order?.pricingDuration){
+                        currentSubscription.name=order.editionCode
+                        currentSubscription.pricingDuration=order.pricingDuration
+                        currentSubscription.status=SubscriptionStatus.ACTIVE
+                        currentSubscription.createdTms=new Date()
+                        currentSubscription.marketplace=marketplace
+                    }
+                    //save changes to the database
+                    if(!existingUser.save()){
+                        log.error("EventService|processChangeSubscriptionEvent > Failed to create subscription for user ID: "+accountIdentifier)
+                        return [error: ErrorCode.UNKNOWN_ERROR]
+                    }
+                    //if all good return message and accountID data to build successful response
+                    log.info("EventService|processChangeSubscriptionEvent > CREATE_SUBSCRIPTION event for user:"+accountIdentifier+"has been successfully processed!")
+                    return [message:"New subscription has been added to:"+accountIdentifier, accountId:accountIdentifier]
+                }
             }
             catch (Exception e){
                 log.error("EventService|processCreateSubscriptionEvent > Failed to create user. Cause:"+e.toString())
                 return [error: ErrorCode.UNKNOWN_ERROR]
             }
         }
+        return [error: ErrorCode.INVALID_RESPONSE]
+    }
+
+    private def processChangeSubscriptionEvent(eventData){
+        String accountIdentifier=EventDataParserUtil.getAccount(eventData).accountIdentifier
+        boolean accountIsActive=EventDataParserUtil.getAccount(eventData).status.equals("ACTIVE")
+        if(!(accountIsActive||accountIdentifier)){
+            log.error("EventService|processChangeSubscriptionEvent > User account is not active or can not process account data from the event XML")
+            return [error: ErrorCode.USER_NOT_FOUND]
+        }
+        def subscription = EventDataParserUtil.getOrder(eventData)
+        log.info("EventService|processChangeSubscriptionEvent > Processing CHANGE_SUBSCRIPTION event for user:"+accountIdentifier)
+        if(subscription){
+            try{
+                def user = TestUser.findByUsername(accountIdentifier)//check if user exist in the database
+                if(user){
+                    Subscription currentSubscription = user.subscriptions[0]
+                    def order = EventDataParserUtil.getOrder(eventData)
+                    String marketplace= EventDataParserUtil.getMarketPlace(eventData).partner?:"Unknown"
+                    log.info("EventService|processChangeSubscriptionEvent > Current subscription data: "+currentSubscription.toString()+" New subscription data:"+order.toString())
+                    if(order?.editionCode&&order?.pricingDuration){
+                        currentSubscription.name=order.editionCode
+                        currentSubscription.pricingDuration=order.pricingDuration
+                        currentSubscription.status=SubscriptionStatus.ACTIVE
+                        currentSubscription.createdTms=new Date()
+                        currentSubscription.marketplace=marketplace
+                    }
+                    //save changes to the database
+                    if(!user.save()){
+                        log.error("EventService|processChangeSubscriptionEvent > Failed to update subscription's data!")
+                        return [error: ErrorCode.UNKNOWN_ERROR]
+                    }
+                    //if all good return accountHolder data for successful response
+                    log.info("EventService|processChangeSubscriptionEvent > CHANGE_SUBSCRIPTION event for user:"+accountIdentifier+"has been successfully processed!")
+                    return [message:"Subscription has been changed for user ID: "+accountIdentifier, accountId:accountIdentifier]
+                }
+                log.error("EventService|processChangeSubscriptionEvent > User with given identifier do not match any records in the database")
+                return [error: ErrorCode.USER_NOT_FOUND]
+            }
+            catch (Exception e){
+                log.error("EventService|processChangeSubscriptionEvent > Failed to update subscription for current user. Cause:"+e.toString())
+                return [error: ErrorCode.UNKNOWN_ERROR]
+            }
+        }
+        log.error("EventService|processChangeSubscriptionEvent > Can not extract subscription data from the even XML")
         return [error: ErrorCode.INVALID_RESPONSE]
     }
 
