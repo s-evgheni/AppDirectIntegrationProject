@@ -52,7 +52,6 @@ class PublicController implements InitializingBean {
     def auth() {
 
         def config = SpringSecurityUtils.securityConfig
-        springSecurityService.currentUserId
 
         if (springSecurityService.isLoggedIn()) {
             redirect url: getRedirectUrl(springSecurityService.currentUser.username)
@@ -63,7 +62,8 @@ class PublicController implements InitializingBean {
          daoPostUrl:    "$request.contextPath$config.apf.filterProcessesUrl",
          persistentRememberMe: config.rememberMe.persistent,
          rememberMeParameter: config.rememberMe.parameter,
-         openidIdentifier: config.openid.claimedIdentityFieldName]
+         openidIdentifier: config.openid.claimedIdentityFieldName,
+         openIdUrl: params?.openid_url?:""]
     }
 
     /**

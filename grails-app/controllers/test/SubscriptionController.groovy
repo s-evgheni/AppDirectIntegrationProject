@@ -21,8 +21,7 @@ class SubscriptionController {
         if(result?.error)//in case of error
             render text: ResponseUtil.generateErrorResponse(result.error)
         else if(result?.accountHolder)//in case of success
-            render text: ResponseUtil.generateErrorResponse(ErrorCode.UNKNOWN_ERROR)
-            /*render text: ResponseUtil.generateSuccessResponse(result.accountHolder)*/
+            render text: ResponseUtil.generateSuccessResponse(result.accountHolder)
         else //just in case, if all else fails :)
             render text: ResponseUtil.generateErrorResponse(ErrorCode.UNKNOWN_ERROR)
     }

@@ -16,8 +16,10 @@
                 <div class="large-12 columns">
                     <g:each in="${userData.subscriptions}" var="subscription">
                         <p class="text-left">Subscription Name: <strong>${subscription?.name}</strong></p>
+                        <p class="text-left">Marketplace: <strong>${subscription?.marketplace}</strong></p>
                         <p class="text-left">Billing period: <strong>${subscription?.pricingDuration}</strong></p>
                         <p class="text-left">Status: <strong>${subscription?.status}</strong></p>
+                        <p class="text-left">Date created: <strong>${subscription?.createdTms}</strong></p>
                     </g:each>
                 </div>
             </div>

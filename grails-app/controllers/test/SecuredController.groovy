@@ -25,6 +25,8 @@ class SecuredController {
         redirect uri: SpringSecurityUtils.securityConfig.logout.filterProcessesUrl // '/j_spring_security_logout'
     }
 
+    //TODO: Add logout button for app direct market
+
     private def getViewModelData(String userName){
         def userData=[:]
         if(userName){

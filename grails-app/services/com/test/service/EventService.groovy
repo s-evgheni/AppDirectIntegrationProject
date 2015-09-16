@@ -54,6 +54,7 @@ class EventService {
             try{
                 String password=DEFAULT_USER_PASSWORD
                 String openId=EventDataParserUtil.getCreator(eventData).openId?:""
+                String marketplace= EventDataParserUtil.getMarketPlace(eventData).partner?:"Unknown"
                 log.info("EventService|processCreateSubscriptionEvent > User's openID:"+openId)
                 //check if user exist
                 boolean exist = TestUser.createCriteria().get{eq('username',userName)}
@@ -68,7 +69,9 @@ class EventService {
                         if(order?.editionCode&&order?.pricingDuration)
                             newUser.addToSubscriptions(name:order?.editionCode,
                                     pricingDuration:order.pricingDuration,
-                                    status: SubscriptionStatus.ACTIVE)
+                                    status: SubscriptionStatus.ACTIVE,
+                                    createdTms: new Date(),
+                                    marketplace: marketplace)
                         else{
                             log.error("EventService|processCreateSubscriptionEvent > User's order data can not be found!")
                             return [error: ErrorCode.INVALID_RESPONSE]
