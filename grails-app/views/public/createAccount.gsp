@@ -30,7 +30,7 @@
                             <strong>Username:</strong>
                         </div>
                         <div class="medium-9 columns text-left">
-                            <g:textField name='username' value='${command.username}'/>
+                            <g:textField name='username' value='${command?.username}'/>
                         </div>
                     </div>
 
@@ -39,7 +39,7 @@
                             <strong>Password:</strong>
                         </div>
                         <div class="medium-9 columns text-left">
-                            <g:passwordField name='password' value='${command.password}'/>
+                            <g:passwordField name='password' value='${command?.password}'/>
                         </div>
                     </div>
 
@@ -48,7 +48,7 @@
                             <strong>Password (again):</strong>
                         </div>
                         <div class="medium-9 columns">
-                            <g:passwordField name='password2' value='${command.password2}'/>
+                            <g:passwordField name='password2' value='${command?.password2}'/>
                         </div>
                     </div>
 
