@@ -79,8 +79,9 @@ class PublicController implements InitializingBean {
 
         String openId = session[OpenIdAuthenticationFailureHandler.LAST_OPENID_USERNAME]
         if (!openId) {
-            flash.error = 'Sorry, an OpenID was not found'
-            return [command: command]
+            redirect action: auth()
+            flash.message = 'You must login via OpenID provider before you can access User registration page'
+            return
         }
 
         if (!request.post) {
@@ -222,7 +223,6 @@ class PublicController implements InitializingBean {
         // just checks that user exists, password is valid, account not locked, etc.
         daoAuthenticationProvider.authenticate new UsernamePasswordAuthenticationToken(username, password)
 
-        def config = SpringSecurityUtils.securityConfig
         User.withTransaction { status ->
             def user = User.findWhere((usernamePropName): username)
             user.addToOpenIds(url: openId)

@@ -1,6 +1,6 @@
 <div class="medium-8 medium-push-2 large-6 large-push-3 columns" xmlns="http://www.w3.org/1999/html">
     <g:if test='${flash.message}'>
-        <div class='alert-box error'>
+        <div data-alert class="alert-box error">
             ${flash.message}
         </div>
     </g:if>
@@ -21,7 +21,7 @@
                     <div class="input-wrapper">
                         <label>
                             <g:textField id="openId-url-input" name="${openidIdentifier}" type="text"
-                                         placeholder="e.g. https://me.yahoo.com/"/>
+                                         placeholder="Examples: https://me.yahoo.com/ | https://www.appdirect.com/openid/id/"/>
                         </label>
                     </div>
                     <g:if test='${persistentRememberMe}'>
