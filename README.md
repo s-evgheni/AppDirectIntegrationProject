@@ -24,11 +24,13 @@ If working correctly and you were logged in as admin it should skip the authenti
 #API flows:
 ####Important !
 1. In order to use API flows for your account you must change consumer key and secret data in the EventService and rebuild the app 
+
 class EventService {
     private static String CONSUMER_KEY='yourKeyHere'
     private static String CONSUMER_SECRET='yourSecretHere'
 ...
 }
+
 2. The app is running an in memory H2 database instance. Any reboots to the app will cause a complete data loss. 
 
 
