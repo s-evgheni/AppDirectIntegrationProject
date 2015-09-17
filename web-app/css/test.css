@@ -4454,6 +4454,7 @@ em, i {
 strong, b {
     font-weight: bold;
     line-height: inherit;
+    word-wrap: break-word;
 }
 
 small {

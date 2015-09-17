@@ -26,10 +26,10 @@
                             <strong>Your Open ID:</strong>
                         </div>
                         <div class="medium-9 columns text-left">
-                            <p>${openId}</p>
+                            <strong>${openId}</strong>
                         </div>
                     </div>
-
+                    <br/>
                     <div class="input-wrapper">
                         <div class="medium-3 columns">
                             <strong>Username:</strong>

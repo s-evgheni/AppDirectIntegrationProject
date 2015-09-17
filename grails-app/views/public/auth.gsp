@@ -21,7 +21,7 @@
                     <div class="input-wrapper">
                         <label>
                             <g:textField id="openId-url-input" name="${openidIdentifier}" type="text" value="${openIdUrl}"
-                                         placeholder="Examples: https://me.yahoo.com/ | https://www.appdirect.com/openid/id/"/>
+                                         placeholder="Examples: https://www.appdirect.com/openid/id/"/>
                         </label>
                     </div>
                     <g:if test='${persistentRememberMe}'>
