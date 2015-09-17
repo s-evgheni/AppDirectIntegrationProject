@@ -53,7 +53,7 @@ class EventService {
 
     //Behaviour:
     //1. If user do not exist: Creates a new user with given subscription data
-    //2. If user exist: Reactive user's account and replace user's old subscription with given subscription data. Set subscription state to ACTIVE
+    //2. If user exist: Replace user's old subscription with given subscription data. Set subscription state to ACTIVE
     //in case of success returns [message, accountId]
     //in case of failure returns [error: com.constants.ErrorCode]
     def private processCreateSubscriptionEvent(eventData){
@@ -136,6 +136,10 @@ class EventService {
         return [error: ErrorCode.INVALID_RESPONSE]
     }
 
+    //Behaviour:
+    //Searches for the user based on accountIdentifier and modifies his current subscription to a new one provided in the CHANGE_SUBSCRIPTION event XML
+    //in case of success returns [message, accountId]
+    //in case of failure returns [error: com.constants.ErrorCode]
     private def processChangeSubscriptionEvent(eventData){
         String accountIdentifier=EventDataParserUtil.getAccount(eventData).accountIdentifier
         boolean accountIsActive=EventDataParserUtil.getAccount(eventData).status.equals("ACTIVE")
@@ -181,6 +185,10 @@ class EventService {
         return [error: ErrorCode.INVALID_RESPONSE]
     }
 
+    //Behaviour:
+    //Searches for the user based on accountIdentifier and changes the status of his current subscription to CANCELLED
+    //in case of success returns [message, accountId]
+    //in case of failure returns [error: com.constants.ErrorCode]
     private def processCancelSubscriptionEvent(eventData){
         String accountIdentifier=EventDataParserUtil.getAccount(eventData).accountIdentifier
         boolean accountIsActive=EventDataParserUtil.getAccount(eventData).status.equals("ACTIVE")

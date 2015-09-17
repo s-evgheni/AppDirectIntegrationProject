@@ -23,12 +23,14 @@ If working correctly and you were logged in as admin it should skip the authenti
 
 #API flows:
 ####Important !
-In order to use API flows for your account you must change consumer key and secret data in the EventService and rebuild the app 
+1. In order to use API flows for your account you must change consumer key and secret data in the EventService and rebuild the app 
 class EventService {
     private static String CONSUMER_KEY='yourKeyHere'
     private static String CONSUMER_SECRET='yourSecretHere'
 ...
 }
+2. The app is running an in memory H2 database instance. Any reboots to the app will cause a complete data loss. 
+
 ##Create subscription (non-interactive event):
 1. Generate SUBSCRIPTION_ORDER event from AppDirect developer account (Developer > Products > Edit button > Integration section > Edit Integration > Subscribe to your product)
 2. Navigate to http://localhost:8080/test/dbconsole and check new user account created by AppDirect event in the TEST_USER table. (this data will also be available in the Integration > Events section of the developer account)
@@ -46,3 +48,4 @@ If working correctly you will be redirected to the secured/users section of the 
 If working correctly you will be redirected to the secured/users section of the site where information about user and his subscription will be displayed. Please note the changes to the subscription state data.
 Canceling subscription does not deactivate user's account in the app. This was done intentionally so the outcome of the CANCEL_SUBSCRIPTION event can be observed in the user interface.
 At this point SUBSCRIPTION_ORDER event can be executed again. In this case the event will replace cancelled subscription on a given user with a new one from the event.
+Please also note that the app do not support SUBSCRIPTION_NOTICE events yet
