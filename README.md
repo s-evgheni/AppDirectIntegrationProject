@@ -32,10 +32,17 @@ class EventService {
 ##Create subscription (non-interactive event):
 1. Generate SUBSCRIPTION_ORDER event from AppDirect developer account (Developer > Products > Edit button > Integration section > Edit Integration > Subscribe to your product)
 2. Navigate to http://localhost:8080/test/dbconsole and check new user account created by AppDirect event in the TEST_USER table. (this data will also be available in the Integration > Events section of the developer account)
-3. Navigate to http://localhost:8080/test/secured/users and enter username from step 2 with a password='P@ssw0rd'
+3. Navigate to http://localhost:8080/test/ and enter username from step 2 with a password='P@ssw0rd'
 If working correctly you will be redirected to the secured/users section of the site where information about new user and his subscription will be displayed.
 
 ##Change subscription (non-interactive event):
 1. Generate SUBSCRIPTION_CHANGE event from AppDirect developer account (Developer > Products > Edit button > Integration section > Edit Integration > Change(update) the subscription)
-2. Navigate to http://localhost:8080/test/secured/users and enter username/password which was assigned to you during SUBSCRIPTION_ORDER event 
+2. Navigate to http://localhost:8080/test/ and enter username/password which was assigned to you during SUBSCRIPTION_ORDER event 
 If working correctly you will be redirected to the secured/users section of the site where information about user and his updated subscription will be displayed. Please note the changes to the subscription data
+
+##Cancel subscription (non-interactive event):
+1. Generate SUBSCRIPTION_CANCEL event from AppDirect developer account (Developer > Products > Edit button > Integration section > Edit Integration > Cancel the subscription)
+2. Navigate to http://localhost:8080/test/ and enter username/password which was assigned to you during SUBSCRIPTION_ORDER event
+If working correctly you will be redirected to the secured/users section of the site where information about user and his subscription will be displayed. Please note the changes to the subscription state data.
+Canceling subscription does not deactivate user's account in the app. This was done intentionally so the outcome of the CANCEL_SUBSCRIPTION event can be observed in the user interface.
+At this point SUBSCRIPTION_ORDER event can be executed again. In this case the event will replace cancelled subscription on a given user with a new one from the event.

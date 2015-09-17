@@ -50,7 +50,19 @@ class SubscriptionController {
 
     //SUBSCRIPTION_CANCEL: fired by AppDirect when a user cancels a subscription.
     def cancel(){
-        render 'cancel subscription endpoint'
+        def eventUrl=params?.eventUrl?:""
+        if(eventUrl){
+            def result = eventService.processEvent(eventUrl)
+            if(result?.error){//in case of error
+                render text: ResponseUtil.generateErrorResponse(result.error)
+                return
+            }
+            else if(result?.accountId&&result?.message){//in case of success
+                render text: ResponseUtil.generateSuccessResponse(result.accountId, result.message)
+                return
+            }
+        }
+        render text: ResponseUtil.generateErrorResponse(ErrorCode.UNKNOWN_ERROR)
     }
     //SUBSCRIPTION_STATUS: fired by AppDirect when a user request subscription status
     def status(){

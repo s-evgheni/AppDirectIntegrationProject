@@ -33,23 +33,27 @@ class EventService {
             return [error: event.errorCode]
 
         String eventType = EventDataParserUtil.getEventType(event.data)
+        def eventResult
         switch (eventType){
             case EventType.SUBSCRIPTION_ORDER:
-                def createSubscriptionResult = processCreateSubscriptionEvent(event.data)
-                return createSubscriptionResult
+                eventResult = processCreateSubscriptionEvent(event.data)
                 break
             case EventType.SUBSCRIPTION_CHANGE:
-                def changeSubscriptionResult = processChangeSubscriptionEvent(event.data)
-                return changeSubscriptionResult
+                eventResult = processChangeSubscriptionEvent(event.data)
+                break
+            case EventType.SUBSCRIPTION_CANCEL:
+                eventResult = processCancelSubscriptionEvent(event.data)
                 break
             default:
-                return [error:ErrorCode.INVALID_RESPONSE]
+                eventResult=[error:ErrorCode.INVALID_RESPONSE]
+                break
         }
+        return eventResult
     }
 
     //Behaviour:
     //1. If user do not exist: Creates a new user with given subscription data
-    //2. If user exist: Replace user's current subscription with given subscription data(only if existing user's subscription is NOT active)
+    //2. If user exist: Reactive user's account and replace user's old subscription with given subscription data. Set subscription state to ACTIVE
     //in case of success returns [message, accountId]
     //in case of failure returns [error: com.constants.ErrorCode]
     def private processCreateSubscriptionEvent(eventData){
@@ -136,7 +140,7 @@ class EventService {
         String accountIdentifier=EventDataParserUtil.getAccount(eventData).accountIdentifier
         boolean accountIsActive=EventDataParserUtil.getAccount(eventData).status.equals("ACTIVE")
         if(!(accountIsActive||accountIdentifier)){
-            log.error("EventService|processChangeSubscriptionEvent > User account is not active or can not process account data from the event XML")
+            log.error("EventService|processChangeSubscriptionEvent > User account is not active or accountIdentifier is not present in the event XML")
             return [error: ErrorCode.USER_NOT_FOUND]
         }
         def subscription = EventDataParserUtil.getOrder(eventData)
@@ -175,6 +179,41 @@ class EventService {
         }
         log.error("EventService|processChangeSubscriptionEvent > Can not extract subscription data from the even XML")
         return [error: ErrorCode.INVALID_RESPONSE]
+    }
+
+    private def processCancelSubscriptionEvent(eventData){
+        String accountIdentifier=EventDataParserUtil.getAccount(eventData).accountIdentifier
+        boolean accountIsActive=EventDataParserUtil.getAccount(eventData).status.equals("ACTIVE")
+        if(!(accountIsActive||accountIdentifier)){
+            log.error("EventService|processCancelSubscriptionEvent > User account is not in canceled state or accountIdentifier is not present in the event XML")
+            return [error: ErrorCode.USER_NOT_FOUND]
+        }
+
+        log.info("EventService|processCancelSubscriptionEvent > Processing CANCEL_SUBSCRIPTION event for user: "+accountIdentifier)
+        try{
+            def user = TestUser.findByUsername(accountIdentifier)//check if user exist in the database
+            if(user){
+                Subscription currentSubscription = user.subscriptions[0]
+                log.info("EventService|processCancelSubscriptionEvent > Current subscription data: "+currentSubscription.toString())
+                if(currentSubscription){
+                    currentSubscription.status=SubscriptionStatus.CANCELLED
+                }
+                //save changes to the database
+                if(!user.save()){
+                    log.error("EventService|processCancelSubscriptionEvent > Failed to update subscription's data!")
+                    return [error: ErrorCode.UNKNOWN_ERROR]
+                }
+                //if all good return accountHolder data for successful response
+                log.info("EventService|processCancelSubscriptionEvent > CANCEL_SUBSCRIPTION event for user:"+accountIdentifier+"has been successfully processed!")
+                return [message:"Subscription has been cancelled for user ID: "+accountIdentifier, accountId:accountIdentifier]
+            }
+            log.error("EventService|processCancelSubscriptionEvent > User with given identifier do not match any records in the database")
+            return [error: ErrorCode.USER_NOT_FOUND]
+        }
+        catch (Exception e){
+            log.error("EventService|processCancelSubscriptionEvent > Failed to update subscription for current user. Cause:"+e.toString())
+            return [error: ErrorCode.UNKNOWN_ERROR]
+        }
     }
 
     //Attempts to create a get even XML data from a given AppDirect URL

@@ -45,8 +45,7 @@ class EventDataParserUtil {
                 status:eventXml?.payload?.account?.status?.text()?:""]
     }
 
-    public static getPayload(eventXml){
-        return [company:getCompany(eventXml),
-                order:getOrder(eventXml)]
+    public static getNoticeType(eventXml){
+        return eventXml?.payload?.notice?.type?.text()?:""
     }
 }
