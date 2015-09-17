@@ -56,3 +56,6 @@ If working correctly you will be redirected to the secured/users section of the 
 Canceling subscription does not deactivate user's account in the app. This was done intentionally so the outcome of the CANCEL_SUBSCRIPTION event can be observed in the user interface.
 At this point SUBSCRIPTION_ORDER event can be executed again. In this case the event will replace cancelled subscription on a given user with a new one from the event.
 Please also note that the app do not support SUBSCRIPTION_NOTICE events yet
+
+
+Technologies used: Grails, Java, Spring Security(with OpenId extension), Zurb's Foundation, HTML5, JavaScript, H2 database, Gradle, Hibernate, SignPost with Apache commons Http library, Oauth 1.0, Tomcat, AppDirect API's;
